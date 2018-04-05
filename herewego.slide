@@ -2,40 +2,67 @@ Here we Go
 The why and how of Go for Cogs
 15:04 4 Apr 2018
 
-* Hello World
+* What was Go designed for?
+[EG]
+- Fast compilation
+- "Lightweight" static type system
+- Powerful static analysis
+- Designed for concurrency
 
-  foo := 42
+.link https://golang.org/doc/faq#What_is_the_purpose_of_the_project
 
-Thats all there is to it
+
+* Why did Cogs choose Go?
+[EG]
+
+- We're committed to evolving towards SOA
+- We value programmer productivity
+
+* Developer experience
+[EG]
 
 * Packages
+[DE]
+# foreshadow dataflow
 
 Something about packages
 
 * Interfaces
+[EG]
 
 Something about Interfaces
 
 * Closures
+[DE]
 
 Something about Closures
 
 * Concurrency
+[EG]
+# talk about dataflow
 
 Something about Concurrency
 
 * Paradigm
+[DE]
 
 Something about Paradigm
 
 * Testing
+[EG]
 
 Something about Testing
 
 * Resources
+[DE]
 
 Something about resources
 
 * Stitch Fix resources
+[EG]
 
 Something about Stitch Fix resources
+
+* Demo the Demo
+
+* Its Go time
