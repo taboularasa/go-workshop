@@ -2,24 +2,51 @@ Here we Go
 The why and how of Go for Cogs
 15:04 4 Apr 2018
 
-* What was Go designed for?
-[EG]
-- Fast compilation
-- "Lightweight" static type system
-- Powerful static analysis
-- Designed for concurrency
+* Go
 
-.link https://golang.org/doc/faq#What_is_the_purpose_of_the_project
+  Everyone knows that debugging is twice as hard as writing a program in the first place. 
+  So if you're as clever as you can be when you write it, how will you ever debug it?
+  - Brian Kernighan
 
+* Why Go?
 
-* Why did Cogs choose Go?
-[EG]
+- Go has many characteristics favorable to developing microservices
+- Go scales well with team size
+- Go helps reduce infrastructure complexity
 
-- We're committed to evolving towards SOA
-- We value programmer productivity
+* Microservice Development
+
+- Performance matters. Cumulative latency is an issue
+- Go's std lib provides provides robust networking capabilities
+- Built in concurrency simplifies working with networked systems
+
+* Maintainability
+
+- Static typing aids discoverability (no grepping required)
+- The compiler catches an entire category of errors
+- The language favors explicitness, which aids readability and maintenainability
+- Static typing enables tooling to further aid development
+- Refactoring is greatly simplified
+
+  Indeed, the ratio of time spent reading versus writing is well over 10 to 1.
+  We are constantly reading old code as part of the effort to write new code. 
+  Therefore, making it easy to read makes it easier to write.
+
+  ― Robert C. Martin, Clean Code: A Handbook of Agile Software Craftsmanship
+
+* Reduced Complexity
+
+- Most requests can be handled synchronously
+- We can work with Rabbit MQ directly
+- Fanning out requests is trivial
+
 
 * Developer experience
-[EG]
+[EJG In progress...]
+- Something about GOPATH....
+- Go is NOT an Objected Oriented language
+- Something about favoring configuration over convention
+- provide tool links
 
 * Packages
 [DE]
@@ -66,3 +93,14 @@ Something about Stitch Fix resources
 * Demo the Demo
 
 * Its Go time
+
+
+
+# putting this slide here to decide if we want it
+* The Design of Go
+
+- Developed with multicore, networking and web application development in mind
+
+
+.link https://golang.org/doc/faq#What_is_the_purpose_of_the_project
+.link https://golang.org/doc/faq#What_is_the_purpose_of_the_projec://talks.golang.org/2012/splash.article 
