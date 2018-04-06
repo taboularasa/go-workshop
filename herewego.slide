@@ -17,7 +17,7 @@ The why and how of Go for Cogs
 * Microservice Development
 
 - Performance matters. Cumulative latency is an issue
-- Go's std lib provides provides robust networking capabilities
+- Go's std lib provides robust networking capabilities
 - Built in concurrency simplifies working with networked systems
 
 * Maintainability
@@ -37,7 +37,7 @@ The why and how of Go for Cogs
 * Reduced Complexity
 
 - Most requests can be handled synchronously
-- We can work with Rabbit MQ directly
+- We can work with RabbitMQ directly
 - Fanning out requests is trivial
 
 
