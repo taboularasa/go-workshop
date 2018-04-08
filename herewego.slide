@@ -17,8 +17,13 @@ The why and how of Go for Cogs
 * Microservice Development
 
 - Performance matters. Cumulative latency is an issue
+: The more services we introduce, the more network hops we need to make
 - Go's std lib provides robust networking capabilities
+: Every request is run in a goroutine. net/http is the defacto http server
 - Built in concurrency simplifies working with networked systems
+: We can easily fan out/in requests to systems.
+: With RabbitMQ one process can handle multiple concurrent consumers
+: running at different rates
 
 * Maintainability
 
@@ -38,15 +43,43 @@ The why and how of Go for Cogs
 
 - Most requests can be handled synchronously
 - We can work with RabbitMQ directly
+: We do not need to resort to resque to get retry logic
 - Fanning out requests is trivial
 
 
 * Developer experience
-[EJG In progress...]
-- Something about GOPATH....
-- Go is NOT an Objected Oriented language
-- Something about favoring configuration over convention
+
+For those getting started, its best to follow Go conventions until you are comforbable
+in the language.
+
+- Don't touch GOPATH
+: Much of the tooling depends on project location. Don't fight it until you understand it
+- Do not attempt to do Object Oriented Programming
+: It has many OO like features, but it is NOT an OO language
+- Favor configuration over convention
+: Go expects everything to be configured, and the earlier the better.
+- Use table driven testing (aka xunit style tests)
+: Do not try to write rspec style tests, it will frustrate you to no end.
+: Also, unless you call Fatal(), go tests do not exit early.
+- You will not have a repl. 
+: You must learn to reason through your code, add debug statements, test in smaller areas,
+: and finally, you can fall back on delv. This is a debugger, not an interpreter.
 - provide tool links
+- Active record isnt there...
+    -- explain how to deal with it (repo pattern)
+- rspec        - use table driven tests
+- debugging    - delv
+- no exception - 
+- No inheritance, use composition
+
+configuration vs convention
+- gopath
+- gofmt
+- imports
+
+With that said, go prefers configuration over convention in apps
+
+
 
 * Packages
 
@@ -75,9 +108,23 @@ The why and how of Go for Cogs
 
 
 * Interfaces
-[EG]
 
-Something about Interfaces
+Interfaces are the generic programming mechanism of Go.
+They Seperate behavior from data (opposite of classes),
+and allow functions to operate on behavior.
+
+*Guidelines*
+
+- Smaller is better
+- Accept an interface, return a struct
+- Focus on composition
+- Declare interfaces close to where the are used
+
+*Links*
+
+.link https://commandercoriander.net/blog/2018/03/30/go-interfaces/
+
+
 
 * Closures
 
@@ -92,8 +139,13 @@ Something about Interfaces
 : e.g. functional arguments
 
 * Concurrency
-[EG]
-: talk about dataflow
+
+Concurrency is first class citizen in Go.
+You already use it. Each web request is in a goroutine
+
+*Guidelines*
+- Don't overuse channels
+- Use context.Context for request scoped state
 
 Something about Concurrency
 
