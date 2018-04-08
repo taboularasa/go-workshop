@@ -5,7 +5,7 @@ The why and how of Go for Cogs
 * What was Go designed for?
 [EG]
 - Fast compilation
-- "Lightweight" static type system
+- Lightweight static type system
 - Powerful static analysis
 - Designed for concurrency
 
@@ -95,11 +95,12 @@ Something about Testing
 
 * Resources
 
-- A tour of Go
-- Dave Cheeney
-- Just for func
-- Gophercast
-- Exercism
+.link https://tour.golang.org/welcome/1 A tour of Go
+.link https://gobyexample.com/ Go by Example
+.link https://dave.cheney.net/ Dave Cheeney
+.link https://www.youtube.com/playlist?list=PL64wiCrrxh4Jisi7OcCJIUpguV_f5jGnZ Just for func
+.link https://www.usegolang.com/ Something like Hartl's Rails Tutorial
+.link http://exercism.io/languages/go/about Exercism
 
 * Stitch Fix resources
 [EG]
@@ -107,5 +108,3 @@ Something about Testing
 Something about Stitch Fix resources
 
 * Demo the Demo
-
-* Its Go time
