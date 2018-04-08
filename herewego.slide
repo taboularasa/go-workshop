@@ -18,6 +18,8 @@ The why and how of Go for Cogs
 
 - Performance matters. Cumulative latency is an issue
 : The more services we introduce, the more network hops we need to make
+: Use Damien as an example. Even when we add services, the total response time should 
+: not increase
 - Go's std lib provides robust networking capabilities
 : Every request is run in a goroutine. net/http is the defacto http server
 - Built in concurrency simplifies working with networked systems
@@ -31,72 +33,57 @@ The why and how of Go for Cogs
 - The compiler catches an entire category of errors
 - The language favors explicitness, which aids readability and maintenainability
 - Static typing enables tooling to further aid development
-- Refactoring is greatly simplified
 
   Indeed, the ratio of time spent reading versus writing is well over 10 to 1.
   We are constantly reading old code as part of the effort to write new code. 
   Therefore, making it easy to read makes it easier to write.
 
   ― Robert C. Martin, Clean Code: A Handbook of Agile Software Craftsmanship
+: diagram of development velocity (dont name ruby, use "dynamic languages"
+: we know its an ask, but long term the type system helps you with a growing code
+: we are thinking about tomorrow
+: go pays in cash, ruby with the CC
+: once you gain fluency, you no longer have the burden
+: determing structure at runtime is a liability. It makes it impossible to reason about
+: the behavior through static analysis. The system could be consider non-deterministic
+: It must be inspected at runtime. This is why we need tools like pry for debugging
 
-* Reduced Complexity
+: grab the sword fighting
+: - this is important to being able to compiletime checking
 
-- Most requests can be handled synchronously
-- We can work with RabbitMQ directly
-: We do not need to resort to resque to get retry logic
-- Fanning out requests is trivial
-
+* Ok, lets talk about what htis means in practice
 
 * Developer experience
 
-For those getting started, its best to follow Go conventions until you are comforbable
-in the language.
+What do I need to know to make getting started in Go a pleasant experience?
 
-- Don't touch GOPATH
-: Much of the tooling depends on project location. Don't fight it until you understand it
-- Do not attempt to do Object Oriented Programming
-: It has many OO like features, but it is NOT an OO language
-- Favor configuration over convention
-: Go expects everything to be configured, and the earlier the better.
-- Use table driven testing (aka xunit style tests)
-: Do not try to write rspec style tests, it will frustrate you to no end.
-: Also, unless you call Fatal(), go tests do not exit early.
-- You will not have a repl. 
-: You must learn to reason through your code, add debug statements, test in smaller areas,
-: and finally, you can fall back on delv. This is a debugger, not an interpreter.
-- provide tool links
-- Active record isnt there...
-    -- explain how to deal with it (repo pattern)
-- rspec        - use table driven tests
-- debugging    - delv
-- no exception - 
-- No inheritance, use composition
+- Don't fight Go Conventions (GOPATH, formatting, ...)
+- Don't overuse concurrency
+- Go does NOT support inheritance in any form. Use composition
+- Avoid creating empty interfaces ( interface{} )
+- Take the time to understand the design of the language (lots of great presentations)
 
-configuration vs convention
-- gopath
-- gofmt
-- imports
-
-With that said, go prefers configuration over convention in apps
-
+: not a comprehensive list, just to help get you started
 
 
 * Packages
 
 - foundational visibility mechanism
-- a directory of files
-- will build a binary if `main.go` exists
+- a directory of files.
+- Only one package may be named in the files
+- will build a binary if the package name is `main`
 - can be imported into other packages, even remotely
 - integral to the build system
 - crucial aspect of system design
+- cyclic dependencies are not supported between packages
 
-  $ cat ./pkg/somepackage/main.go
+  $ cat ./pkg/somepackage/service.go
 
   package somepackage
 
   import 'github.com/taboularasa/gosf/otherpackage'
 
-  func main() {
+  func updateItem() {
 
   }
 
@@ -105,6 +92,7 @@ With that said, go prefers configuration over convention in apps
 : the public API of a package is defined by exported members, any reference which starts with a capital letter
 : all other aspects of the package are private
 : all private references can be used freely within a package
+: packages are atomic and can be reused simply by moving them to another location and updating the import reference
 
 
 * Interfaces
@@ -116,15 +104,18 @@ and allow functions to operate on behavior.
 *Guidelines*
 
 - Smaller is better
-- Accept an interface, return a struct
-- Focus on composition
 - Declare interfaces close to where the are used
+- Focus on composition
+- Accept an interface, return a struct
 
 *Links*
 
 .link https://commandercoriander.net/blog/2018/03/30/go-interfaces/
 
-
+: reference the blog for robustness principle on its own
+: it is primarily used as a type guard in a method (only use what you need)
+: like ruby checks to see if the type can do what you expect (does it actually quack?)
+: it is ok to reuse an interface
 
 * Closures
 
@@ -138,10 +129,19 @@ and allow functions to operate on behavior.
 : many patterns exist that leverage closure
 : e.g. functional arguments
 
+: TODO - give an example of closure gotchas
+: TODO - show how to use a type alias
+: TODO - show how a type system can be leveraged to ensure correctness (golib auth)
+: TODO - show a sealed interface
+
 * Concurrency
 
 Concurrency is first class citizen in Go.
 You already use it. Each web request is in a goroutine
+
+* Receivers
+
+: TODO: this would be a good place to show nil receivers
 
 *Guidelines*
 - Don't overuse channels
@@ -185,4 +185,30 @@ Something about Testing
 [EG]
 
 Something about Stitch Fix resources
+
+: Go is a bonsai tree
+: Much of the tooling depends on project location. Don't fight it until you understand it
+- Do not attempt to do Object Oriented Programming
+: It has many OO like features, but it is NOT an OO language
+- Favor configuration over convention
+: Go expects everything to be configured, and the earlier the better.
+- Use table driven testing (aka xunit style tests)
+: Do not try to write rspec style tests, it will frustrate you to no end.
+: Also, unless you call Fatal(), go tests do not exit early.
+- You will not have a repl. 
+: You must learn to reason through your code, add debug statements, test in smaller areas,
+: and finally, you can fall back on delv. This is a debugger, not an interpreter.
+- provide tool links
+- Active record isnt there...
+    -- explain how to deal with it (repo pattern)
+- rspec        - use table driven tests
+- debugging    - delv
+- no exception - 
+- No inheritance, use composition
+: implicit conformance, this reduces the ceremony around type systems
+: gives go the feeling of "duck typing"
+
+* Demo the Demo
+
+: Enumerate on project ideas (unix commands, api integrations, classic algorithms, exercisms projects)
 
