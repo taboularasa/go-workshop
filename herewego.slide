@@ -9,7 +9,7 @@ The why and how of Go for Cogs
 - Powerful static analysis
 - Designed for concurrency
 
-.link https://golang.org/doc/faq#What_is_the_purpose_of_the_project
+.link https://golang.org/doc/faq:What_is_the_purpose_of_the_project
 
 
 * Why did Cogs choose Go?
@@ -22,10 +22,30 @@ The why and how of Go for Cogs
 [EG]
 
 * Packages
-[DE]
-# foreshadow dataflow
 
-Something about packages
+- foundational visibility mechanism
+- a directory of files
+- will build a binary if `main.go` exists
+- can be imported into other packages, even remotely
+- integral to the build system
+- crucial aspect of system design
+
+  $ cat ./pkg/somepackage/main.go
+
+  package somepackage
+
+  import 'github.com/taboularasa/gosf/otherpackage'
+
+  func main() {
+
+  }
+
+: foreshadow dataflow
+: packages predicate all other visibility aspects in the language
+: the public API of a package is defined by exported members, any reference which starts with a capital letter
+: all other aspects of the package are private
+: all private references can be used freely within a package
+
 
 * Interfaces
 [EG]
@@ -33,20 +53,40 @@ Something about packages
 Something about Interfaces
 
 * Closures
-[DE]
 
-Something about Closures
+- functions are first class
+- functions can be passed as arguments
+- functions close over (keep a reference to) local variables in their lexical scope
+
+.play closure.go
+
+: closure holds reference to local variables that were defined in the same scope as where the function was defined
+: many patterns exist that leverage closure
+: e.g. functional arguments
 
 * Concurrency
 [EG]
-# talk about dataflow
+: talk about dataflow
 
 Something about Concurrency
 
 * Paradigm
-[DE]
 
-Something about Paradigm
+.image paradigm.png
+
+- Go has light/weak support for OO and Functional
+- Go works best by applying all paradigms in even proportions
+- procedural shell, functional core
+: multi paradigm languages typically allow for optional application of some paradigm
+
+: functional:
+:   - functions are first class
+:   - closures
+:   - lack of generics prevent most higher order functions to be implemented effectively
+: OO:
+:   - instances of structs can have encapsulated state and behavior
+:   - code reuse accomplished via composition
+:   - lack of inheritance prevents many OO patterns
 
 * Testing
 [EG]
@@ -54,9 +94,12 @@ Something about Paradigm
 Something about Testing
 
 * Resources
-[DE]
 
-Something about resources
+- A tour of Go
+- Dave Cheeney
+- Just for func
+- Gophercast
+- Exercism
 
 * Stitch Fix resources
 [EG]
