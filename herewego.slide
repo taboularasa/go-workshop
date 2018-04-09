@@ -46,7 +46,7 @@ The why and how of Go for Cogs
 .image compiling.png
 
 - The language made feature tradeoffs to ensure fast builds
-- 
+
 
 : diagram of development velocity (dont name ruby, use "dynamic languages"
 : we know its an ask, but long term the type system helps you with a growing code
@@ -170,6 +170,9 @@ Authorize will know nothing about the implementation of Whitelister
 *Links*
 .link https://github.com/golang/go/wiki/CommonMistakes
 .link http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/
+
+: Use the example to show that the variable is reused.
+: The example is editable. Update the code to show how to fix it
 
 *Concurrency
 
