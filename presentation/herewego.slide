@@ -33,7 +33,7 @@ The why and how of Go for Cogs
 - The compiler can catch an entire category of errors
 - Static analysis enables tooling to aid development
 
-*Code* # need a better name for this
+*Syntax*
 
 - Go favors readable code over concise code
 - Idiomatic Go code should be not be surprising. No/few globals, initialization of app state occurs during startup and is required.
@@ -53,12 +53,20 @@ The why and how of Go for Cogs
 : the behavior through static analysis. The system could be consider non-deterministic
 : It must be inspected at runtime. This is why we need tools like pry for debugging
 
+* The For loop 
+
+[DE]  - add this
+
+
 * Maintainability Continued...
 
 .image compiling.png
 
 - The language made feature tradeoffs to ensure fast builds
 - I just wanted a slide for this comic
+
+: The compiler is doing work to help us. historically, we haven't had this because the benefit comes at the cost
+: of compile time
 
 * Go in Practice
 
@@ -82,7 +90,7 @@ What do I need to know to make getting started in Go a pleasant experience?
 
   package somepackage
 
-  import 'github.com/taboularasa/gosf/otherpackage'
+  import 'github.com/stitchfix/gosf/otherpackage'
 
   func updateItem() {
     otherpackage.SomePublicFunction()
@@ -92,11 +100,11 @@ What do I need to know to make getting started in Go a pleasant experience?
     updateItem()
   }
 
-- a directory of files that all start with the same line `package <NAME OF PACKAGE>`
-- only one package name per directory
-- foundational visibility mechanism
-- cyclic dependencies will not compile
-- will build a binary if the package name is `main`
+- A directory of files that all start with the same line `package <NAME OF PACKAGE>`
+- Only one package name per directory
+- Foundational visibility mechanism
+- Cyclic dependencies will not compile
+- Will build a binary if the package name is `main`
 
 : can be imported into other packages, even remotely
 : packages predicate all other visibility aspects in the language
@@ -143,7 +151,7 @@ Authorize will know nothing about the implementation of Whitelister
 
 : Robustness Principle is primarily used as a type guard in a method (only use what you need)
 :   like ruby checks to see if the type can do what you expect (does it actually quack?)
-: As the an interface gains more users, it should move further away (think io package)
+: As the an interface gains more implementations, it should move further away (think io package)
 
 * Closures
 
@@ -193,6 +201,11 @@ Since closures reference local variables, you need to be watch out for variable 
 
 Go's receivers _look_ like instance methods, but are just syntactic sugar over struct helper methods. The syntactic sugar provides namespacing, which improves readability
 
+*Given*
+.code receivers.go /^type Name/,/^}/
+
+* Receivers Example
+
 .play receivers.go /^func main/,/^}/
 
 
@@ -200,7 +213,7 @@ Go's receivers _look_ like instance methods, but are just syntactic sugar over s
 
 Since a receiver is just a function that takes a struct, the struct can be nil
 
-.play nil_receiver.go /^type Datastore/,/^}/
+.play nil_receiver.go 
 
 : this lets the developer of the receiver create a consistent api (ie the user doesnt have to worry about nils)
 
@@ -225,22 +238,44 @@ Since a receiver is just a function that takes a struct, the struct can be nil
 
 * Testing
 
-Testing is built into Go. Use the *testing* package to write tests, and *go test* to run them.
+Testing is built into Go. Use the *testing* package to write tests, and *go* *test* to run them.
 
 - Idiomatic Go tests use either table driven tests or subtests
-- We recommend using an assertion package to reduce boilerplate assertion tests
+- We recommend using an assertion package to reduce boilerplate assertions
 - Go does not exit tests early unless you call *Fatal()*
+- If you use subtests, the execute in order
 
+
+* Table Tests
   testCases := []struct {
     desc   string
     input  []int
     output int
-  }{ { desc: "happy path", input: []int {1,2}, output: 3} }
+  }{ 
+    { desc: "add two numbers", input: []int {1,2}, output: 3},
+    { desc: "add three numbers", input: []int {1,2,3}, output: 6},
+  }
   for _, tc := range testCases {
     assert.Equal(Add(tc.input), tc.output, tc.desc)
   }
 
-* Resources
+* Sub Tests
+
+[EJG] - Add this
+
+* Sub Tests - Ross Mashup!
+[EJG] - Add this
+
+* General Resources for Getting Started
+
+.link https://tour.golang.org/welcome/1 A tour of Go
+.link https://gobyexample.com/ Go by Example
+.link https://dave.cheney.net/ Dave Cheeney
+.link https://www.youtube.com/playlist?list=PL64wiCrrxh4Jisi7OcCJIUpguV_f5jGnZ Just for func
+.link https://www.usegolang.com/ Something like Hartl's Rails Tutorial
+.link http://exercism.io/languages/go/about Exercism
+
+* Deep Dive Resources
 
 .link https://blog.merovius.de/2017/09/12/diminishing-returns-of-static-typing.html Diminishing returns of static typing
 .link https://commandercoriander.net/blog/2018/03/30/go-interfaces/ A Note on Using Go Interfaces Well
@@ -251,14 +286,6 @@ Testing is built into Go. Use the *testing* package to write tests, and *go test
 .link https://www.youtube.com/watch?v=8hQG7QlcLBk GopherCon 2017: Mitchell Hashimoto - Advanced Testing with Go
 .link https://github.com/bahlo/go-styleguide Go Styleguide
 
-* More Resources!
-
-.link https://tour.golang.org/welcome/1 A tour of Go
-.link https://gobyexample.com/ Go by Example
-.link https://dave.cheney.net/ Dave Cheeney
-.link https://www.youtube.com/playlist?list=PL64wiCrrxh4Jisi7OcCJIUpguV_f5jGnZ Just for func
-.link https://www.usegolang.com/ Something like Hartl's Rails Tutorial
-.link http://exercism.io/languages/go/about Exercism
 
 * Stitch Fix Resources
 
