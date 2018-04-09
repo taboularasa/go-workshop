@@ -10,19 +10,18 @@ The why and how of Go for Cogs
 
 * Why Go?
 
-- Go has many characteristics favorable to developing microservices
+- Go has characteristics favorable to developing microservices
 - Go scales well with team size
-- Go helps reduce infrastructure complexity
 
 * Microservice Development
 
 - Performance matters. Cumulative latency is an issue
+- Go's std lib provides robust networking capabilities
+- Built in concurrency simplifies working with networked systems
 : The more services we introduce, the more network hops we need to make
 : Use Damien as an example. Even when we add services, the total response time should 
 : not increase
-- Go's std lib provides robust networking capabilities
 : Every request is run in a goroutine. net/http is the defacto http server
-- Built in concurrency simplifies working with networked systems
 : We can easily fan out/in requests to systems.
 : With RabbitMQ one process can handle multiple concurrent consumers
 : running at different rates
@@ -30,15 +29,25 @@ The why and how of Go for Cogs
 * Maintainability
 
 - Static typing aids discoverability (no grepping required)
-- The compiler catches an entire category of errors
-- The language favors explicitness, which aids readability and maintenainability
-- Static typing enables tooling to further aid development
+- The compiler can catch an entire category of errors
+- The language favors explicitness, which aids readability and maintainability
+- Static analysis enables tooling to further aid development
 
   Indeed, the ratio of time spent reading versus writing is well over 10 to 1.
   We are constantly reading old code as part of the effort to write new code. 
   Therefore, making it easy to read makes it easier to write.
 
   ― Robert C. Martin, Clean Code: A Handbook of Agile Software Craftsmanship
+
+
+* Maintainability Continued...
+
+
+.image compiling.png
+
+- The language made feature tradeoffs to ensure fast builds
+
+
 : diagram of development velocity (dont name ruby, use "dynamic languages"
 : we know its an ask, but long term the type system helps you with a growing code
 : we are thinking about tomorrow
@@ -47,24 +56,23 @@ The why and how of Go for Cogs
 : determing structure at runtime is a liability. It makes it impossible to reason about
 : the behavior through static analysis. The system could be consider non-deterministic
 : It must be inspected at runtime. This is why we need tools like pry for debugging
+: this is important to being able to compiletime checking
 
-: grab the sword fighting
-: - this is important to being able to compiletime checking
+* Go in Practice
 
-* Ok, lets talk about what htis means in practice
+.image in-practice.gif
 
-* Developer experience
+* Getting Started with Go
 
 What do I need to know to make getting started in Go a pleasant experience?
 
-- Don't fight Go Conventions (GOPATH, formatting, ...)
+- Don't fight Go Conventions (GOPATH, formatting, testing ...)
 - Don't overuse concurrency
-- Go does NOT support inheritance in any form. Use composition
-- Avoid creating empty interfaces ( interface{} )
+- Go does NOT support inheritance in any form, use composition
+- Avoid empty interfaces ( interface{} ), use the type system to your advantage
 - Take the time to understand the design of the language (lots of great presentations)
 
 : not a comprehensive list, just to help get you started
-
 
 * Packages
 
@@ -98,21 +106,41 @@ What do I need to know to make getting started in Go a pleasant experience?
 * Interfaces
 
 Interfaces are the generic programming mechanism of Go.
-They Seperate behavior from data (opposite of classes),
+They seperate behavior from data (opposite of classes),
 and allow functions to operate on behavior.
 
-*Guidelines*
+  // Whitelister checks the provided key against a list of allowed keys,
+  // and returns true if the provided key is included.
+  type Whitelister interface {
+    Includes(key string) bool
+  }
+ 
+  // usage in a function declaration
+  func authorize(r http.Request, w Whitelister) error {
+ 
+  // authorize a request
+  err := authorize(request, DBWhitelist{db: db})
+
+Authorize will know nothing about the implementation of Whitelister
+
+
+* Interface Guidelines
 
 - Smaller is better
 - Declare interfaces close to where the are used
-- Focus on composition
-- Accept an interface, return a struct
+- Consider the Robustness Principle: Accept an interface, return a struct
+- You can compose interfaces from other interfaces
+ // ReadCloser is the interface that groups the basic Read and Close methods.
+ type ReadCloser interface {
+  Reader
+  Closer
+ }
 
 *Links*
 
 .link https://commandercoriander.net/blog/2018/03/30/go-interfaces/
+.link https://en.wikipedia.org/wiki/Robustness_principle 
 
-: reference the blog for robustness principle on its own
 : it is primarily used as a type guard in a method (only use what you need)
 : like ruby checks to see if the type can do what you expect (does it actually quack?)
 : it is ok to reuse an interface
@@ -129,23 +157,34 @@ and allow functions to operate on behavior.
 : many patterns exist that leverage closure
 : e.g. functional arguments
 
-: TODO - give an example of closure gotchas
+
 : TODO - show how to use a type alias
 : TODO - show how a type system can be leveraged to ensure correctness (golib auth)
 : TODO - show a sealed interface
 
-* Concurrency
+* Closure Gotchas
 
-Concurrency is first class citizen in Go.
-You already use it. Each web request is in a goroutine
+.play -edit closure_gotcha.go /^func main/,/^}/
 
-* Receivers
 
-: TODO: this would be a good place to show nil receivers
+*Links*
+.link https://github.com/golang/go/wiki/CommonMistakes
+.link http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/
+
+: Use the example to show that the variable is reused.
+: The example is editable. Update the code to show how to fix it
+
+*Concurrency
 
 *Guidelines*
 - Don't overuse channels
 - Use context.Context for request scoped state
+
+* Receivers
+
+
+: TODO: this would be a good place to show nil receivers
+
 
 Something about Concurrency
 
