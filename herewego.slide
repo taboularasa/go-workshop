@@ -15,23 +15,28 @@ The why and how of Go for Cogs
 
 * Microservice Development
 
-- Performance matters. Cumulative latency is an issue
+- Performance matters. We need to maintain consistent performance while incorporating more services
 - Go's std lib provides robust networking capabilities
 - Built in concurrency simplifies working with networked systems
-: The more services we introduce, the more network hops we need to make
-: Use Damien as an example. Even when we add services, the total response time should
-: not increase
-: Every request is run in a goroutine. net/http is the defacto http server
-: We can easily fan out/in requests to systems.
-: With RabbitMQ one process can handle multiple concurrent consumers
-: running at different rates
+
+: Damien is a great example.  We used concurrency to fan out requests to other services,
+:   and aggregate the results upon completion.
+: You are already using concurrency! Every request is run in a goroutine
+: This helps integrate with systems like RabbitMQ. One process can handle
+:   multiple concurrent consumers running at different rates
 
 * Maintainability
 
-- Static typing aids discoverability (no grepping required)
+*Static* *Typing*
+
+- Aids discoverability (no grepping required)
 - The compiler can catch an entire category of errors
-- The language favors explicitness, which aids readability and maintainability
-- Static analysis enables tooling to further aid development
+- Static analysis enables tooling to aid development
+
+*Code* # need a better name for this
+
+- Go favors readable code over concise code
+- Idiomatic Go code should be not be surprising. No/few globals, initialization of app state occurs during startup and is required.
 
   Indeed, the ratio of time spent reading versus writing is well over 10 to 1.
   We are constantly reading old code as part of the effort to write new code.
@@ -39,24 +44,21 @@ The why and how of Go for Cogs
 
   ― Robert C. Martin, Clean Code: A Handbook of Agile Software Craftsmanship
 
+: Recognize that static typing comes with a cost. With Go, the cost is lower than in some other languages
+:  but is still there. Over time, we expect this to pay off due to the outlined benefits
+: We have changed our thinking from startup mode, to maintainable solutions
+: As David says, "Go pays in cash, ruby with credit"
+: Mention blog post at end of deck (diagram of development velocity)
+: determing structure at runtime is a liability. It makes it impossible to reason about
+: the behavior through static analysis. The system could be consider non-deterministic
+: It must be inspected at runtime. This is why we need tools like pry for debugging
 
 * Maintainability Continued...
-
 
 .image compiling.png
 
 - The language made feature tradeoffs to ensure fast builds
-
-
-: diagram of development velocity (dont name ruby, use "dynamic languages"
-: we know its an ask, but long term the type system helps you with a growing code
-: we are thinking about tomorrow
-: go pays in cash, ruby with the CC
-: once you gain fluency, you no longer have the burden
-: determing structure at runtime is a liability. It makes it impossible to reason about
-: the behavior through static analysis. The system could be consider non-deterministic
-: It must be inspected at runtime. This is why we need tools like pry for debugging
-: this is important to being able to compiletime checking
+- I just wanted a slide for this comic
 
 * Go in Practice
 
@@ -72,7 +74,7 @@ What do I need to know to make getting started in Go a pleasant experience?
 - Avoid empty interfaces ( interface{} ), use the type system to your advantage
 - Take the time to understand the design of the language (lots of great presentations)
 
-: not a comprehensive list, just to help get you started
+: Not a comprehensive list, just to help get you started
 
 * Packages
 
@@ -139,20 +141,15 @@ Authorize will know nothing about the implementation of Whitelister
   Closer
  }
 
-*Links*
-
-.link https://commandercoriander.net/blog/2018/03/30/go-interfaces/
-.link https://en.wikipedia.org/wiki/Robustness_principle
-
-: it is primarily used as a type guard in a method (only use what you need)
-: like ruby checks to see if the type can do what you expect (does it actually quack?)
-: it is ok to reuse an interface
+: Robustness Principle is primarily used as a type guard in a method (only use what you need)
+:   like ruby checks to see if the type can do what you expect (does it actually quack?)
+: As the an interface gains more users, it should move further away (think io package)
 
 * Closures
 
-- functions are first class
-- functions can be passed as arguments
-- functions close over (keep a reference to) local variables in their lexical scope
+- Functions are first class types
+- Functions can be passed as arguments
+- Functions close over (keep a reference to) local variables in their lexical scope
 
 .play closure.go
 
@@ -186,29 +183,27 @@ Authorize will know nothing about the implementation of Whitelister
 
 * Closure Gotchas
 
+Since closures reference local variables, you need to be watch out for variable reuse
 .play -edit closure_gotcha.go /^func main/,/^}/
-
-
-*Links*
-.link https://github.com/golang/go/wiki/CommonMistakes
-.link http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/
 
 : Use the example to show that the variable is reused.
 : The example is editable. Update the code to show how to fix it
 
-*Concurrency
-
-*Guidelines*
-- Don't overuse channels
-- Use context.Context for request scoped state
-
 * Receivers
 
+Go's receivers _look_ like instance methods, but are just syntactic sugar over struct helper methods. The syntactic sugar provides namespacing, which improves readability
 
-: TODO: this would be a good place to show nil receivers
+.play receivers.go /^func main/,/^}/
 
 
-Something about Concurrency
+* Nil Receivers
+
+Since a receiver is just a function that takes a struct, the struct can be nil
+
+.play nil_receiver.go /^type Datastore/,/^}/
+
+: this lets the developer of the receiver create a consistent api (ie the user doesnt have to worry about nils)
+
 
 * Paradigm
 
@@ -229,11 +224,34 @@ Something about Concurrency
 :   - lack of inheritance prevents many OO patterns
 
 * Testing
-[EG]
 
-Something about Testing
+Testing is built into Go. Use the *testing* package to write tests, and *go test* to run them.
+
+- Idiomatic Go tests use either table driven tests or subtests
+- We recommend using an assertion package to reduce boilerplate assertion tests
+- Go does not exit tests early unless you call *Fatal()*
+
+  testCases := []struct {
+    desc   string
+    input  []int
+    output int
+  }{ { desc: "happy path", input: []int {1,2}, output: 3} }
+  for _, tc := range testCases {
+    assert.Equal(Add(tc.input), tc.output, tc.desc)
+  }
 
 * Resources
+
+.link https://blog.merovius.de/2017/09/12/diminishing-returns-of-static-typing.html Diminishing returns of static typing
+.link https://commandercoriander.net/blog/2018/03/30/go-interfaces/ A Note on Using Go Interfaces Well
+.link https://en.wikipedia.org/wiki/Robustness_principle Robustness principle - Wikipedia
+.link https://github.com/golang/go/wiki/CommonMistakes Common Go Mistakes
+.link http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/ 50 Shades of Go: Traps, Gotchas, and Common Mistakes for New Golang Devs
+.link https://blog.heroku.com/neither-self-nor-this-receivers-in-go Neither self nor this: Receivers in Go
+.link https://www.youtube.com/watch?v=8hQG7QlcLBk GopherCon 2017: Mitchell Hashimoto - Advanced Testing with Go
+.link https://github.com/bahlo/go-styleguide Go Styleguide
+
+* More Resources!
 
 .link https://tour.golang.org/welcome/1 A tour of Go
 .link https://gobyexample.com/ Go by Example
@@ -242,30 +260,29 @@ Something about Testing
 .link https://www.usegolang.com/ Something like Hartl's Rails Tutorial
 .link http://exercism.io/languages/go/about Exercism
 
-* Stitch Fix resources
-[EG]
+* Stitch Fix Resources
 
-Something about Stitch Fix resources
+.link https://github.com/stitchfix/eng-wiki/tree/master/technical-topics/go Go Technical Topics (eng-wiki)
 
 : Go is a bonsai tree
 : Much of the tooling depends on project location. Don't fight it until you understand it
-- Do not attempt to do Object Oriented Programming
+: Do not attempt to do Object Oriented Programming
 : It has many OO like features, but it is NOT an OO language
-- Favor configuration over convention
+: Favor configuration over convention
 : Go expects everything to be configured, and the earlier the better.
-- Use table driven testing (aka xunit style tests)
+: Use table driven testing (aka xunit style tests)
 : Do not try to write rspec style tests, it will frustrate you to no end.
 : Also, unless you call Fatal(), go tests do not exit early.
-- You will not have a repl.
+: You will not have a repl.
 : You must learn to reason through your code, add debug statements, test in smaller areas,
 : and finally, you can fall back on delv. This is a debugger, not an interpreter.
-- provide tool links
-- Active record isnt there...
-    -- explain how to deal with it (repo pattern)
-- rspec        - use table driven tests
-- debugging    - delv
-- no exception -
-- No inheritance, use composition
+: provide tool links
+: Active record isnt there...
+:    -- explain how to deal with it (repo pattern)
+: rspec        - use table driven tests
+: debugging    - delv
+: no exception -
+: No inheritance, use composition
 : implicit conformance, this reduces the ceremony around type systems
 : gives go the feeling of "duck typing"
 
