@@ -4,7 +4,7 @@ The why and how of Go for Cogs
 
 * Go
 
-  Everyone knows that debugging is twice as hard as writing a program in the first place. 
+  Everyone knows that debugging is twice as hard as writing a program in the first place.
   So if you're as clever as you can be when you write it, how will you ever debug it?
   - Brian Kernighan
 
@@ -19,7 +19,7 @@ The why and how of Go for Cogs
 - Go's std lib provides robust networking capabilities
 - Built in concurrency simplifies working with networked systems
 : The more services we introduce, the more network hops we need to make
-: Use Damien as an example. Even when we add services, the total response time should 
+: Use Damien as an example. Even when we add services, the total response time should
 : not increase
 : Every request is run in a goroutine. net/http is the defacto http server
 : We can easily fan out/in requests to systems.
@@ -34,7 +34,7 @@ The why and how of Go for Cogs
 - Static analysis enables tooling to further aid development
 
   Indeed, the ratio of time spent reading versus writing is well over 10 to 1.
-  We are constantly reading old code as part of the effort to write new code. 
+  We are constantly reading old code as part of the effort to write new code.
   Therefore, making it easy to read makes it easier to write.
 
   ― Robert C. Martin, Clean Code: A Handbook of Agile Software Craftsmanship
@@ -76,15 +76,6 @@ What do I need to know to make getting started in Go a pleasant experience?
 
 * Packages
 
-- foundational visibility mechanism
-- a directory of files.
-- Only one package may be named in the files
-- will build a binary if the package name is `main`
-- can be imported into other packages, even remotely
-- integral to the build system
-- crucial aspect of system design
-- cyclic dependencies are not supported between packages
-
   $ cat ./pkg/somepackage/service.go
 
   package somepackage
@@ -92,11 +83,23 @@ What do I need to know to make getting started in Go a pleasant experience?
   import 'github.com/taboularasa/gosf/otherpackage'
 
   func updateItem() {
-
+    otherpackage.SomePublicFunction()
   }
 
-: foreshadow dataflow
+  func UpdateItems() {
+    updateItem()
+  }
+
+- foundational visibility mechanism
+- a directory of files that all start with the same line `package <NAME OF PACKAGE>`
+- only one package name per directory
+- will build a binary if the package name is `main`
+- cyclic dependencies will not compile
+
+: can be imported into other packages, even remotely
 : packages predicate all other visibility aspects in the language
+: integral to the build system
+: crucial aspect of system design
 : the public API of a package is defined by exported members, any reference which starts with a capital letter
 : all other aspects of the package are private
 : all private references can be used freely within a package
@@ -114,10 +117,10 @@ and allow functions to operate on behavior.
   type Whitelister interface {
     Includes(key string) bool
   }
- 
+
   // usage in a function declaration
   func authorize(r http.Request, w Whitelister) error {
- 
+
   // authorize a request
   err := authorize(request, DBWhitelist{db: db})
 
@@ -139,7 +142,7 @@ Authorize will know nothing about the implementation of Whitelister
 *Links*
 
 .link https://commandercoriander.net/blog/2018/03/30/go-interfaces/
-.link https://en.wikipedia.org/wiki/Robustness_principle 
+.link https://en.wikipedia.org/wiki/Robustness_principle
 
 : it is primarily used as a type guard in a method (only use what you need)
 : like ruby checks to see if the type can do what you expect (does it actually quack?)
@@ -234,7 +237,7 @@ Something about Stitch Fix resources
 - Use table driven testing (aka xunit style tests)
 : Do not try to write rspec style tests, it will frustrate you to no end.
 : Also, unless you call Fatal(), go tests do not exit early.
-- You will not have a repl. 
+- You will not have a repl.
 : You must learn to reason through your code, add debug statements, test in smaller areas,
 : and finally, you can fall back on delv. This is a debugger, not an interpreter.
 - provide tool links
@@ -242,7 +245,7 @@ Something about Stitch Fix resources
     -- explain how to deal with it (repo pattern)
 - rspec        - use table driven tests
 - debugging    - delv
-- no exception - 
+- no exception -
 - No inheritance, use composition
 : implicit conformance, this reduces the ceremony around type systems
 : gives go the feeling of "duck typing"
@@ -250,4 +253,3 @@ Something about Stitch Fix resources
 * Demo the Demo
 
 : Enumerate on project ideas (unix commands, api integrations, classic algorithms, exercisms projects)
-
