@@ -90,11 +90,11 @@ What do I need to know to make getting started in Go a pleasant experience?
     updateItem()
   }
 
-- foundational visibility mechanism
 - a directory of files that all start with the same line `package <NAME OF PACKAGE>`
 - only one package name per directory
-- will build a binary if the package name is `main`
+- foundational visibility mechanism
 - cyclic dependencies will not compile
+- will build a binary if the package name is `main`
 
 : can be imported into other packages, even remotely
 : packages predicate all other visibility aspects in the language
@@ -164,6 +164,25 @@ Authorize will know nothing about the implementation of Whitelister
 : TODO - show how to use a type alias
 : TODO - show how a type system can be leveraged to ensure correctness (golib auth)
 : TODO - show a sealed interface
+
+* Closures (continued)
+
+  type counterFunc func() int
+
+  func counterFactory(start, increment int) counterFunc {
+  	counter := start
+  	return func() int {
+  		counter = counter + increment
+  		return counter
+  	}
+  }
+
+  func main() {
+  	countBy10 := counterFactory(0, 10)
+  	fmt.Println(countBy10())
+  	fmt.Println(countBy10())
+  }
+
 
 * Closure Gotchas
 
@@ -251,5 +270,14 @@ Something about Stitch Fix resources
 : gives go the feeling of "duck typing"
 
 * Demo the Demo
+
+.link https://github.com/spf13/cobra cobra
+
+implement a unix command
+.link https://github.com/ericlagergren/go-coreutils go-coreutils
+embed something from exercism
+.link http://exercism.io/languages/go/about Exercism
+implment a classic algorithm in Go
+.link https://golanglibs.com/top?q=golang-algorithms golang-algorithms
 
 : Enumerate on project ideas (unix commands, api integrations, classic algorithms, exercisms projects)
